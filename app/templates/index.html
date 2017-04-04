@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% if session['username'] == Null %}
+        Please Log in.
+    {% else %}
+        <ul>
+            <li><a href="{{url_for('index')}}">Index</a></li>
+        </ul>
+
+        <ul>
+            <li>
+                <form action="{{ url_for('stock_get') }}">
+                    Exchange <input type="text" name="exchange">
+                    Ticker <input type="text" name="ticker">
+                    <input type="submit"/>
+                </form>
+            </li>
+        </ul>
+
+        <ul>
+            <li><a href="{{ url_for('create_table')}}">Create Table</a></li>
+
+            <li><a href="{{ url_for('delete_table')}}">Delete Table</a></li>
+        </ul>
+
+        <ul>
+            <li>
+                <form action="{{ url_for('stock_put')}}">
+                    Put movie
+                    Year <input type="text" name="year" />
+                    Title <input type="text" name="title" />
+                    Rating <input type="text" name="rating" />
+                    <input type="submit" />
+                </form>
+            </li>
+
+            <li>
+                <form action="{{ url_for('stock_get')}}">
+                    Get movie
+                    Year <input type="text" name="year" />
+                    Title <input type="text" name="title" />
+                    <input type="submit" />
+                </form>
+            </li>
+
+            <li>
+                <form action="{{ url_for('movie_update')}}">
+                    Update movie
+                    Year <input type="text" name="year" />
+                    Title <input type="text" name="title" />
+                    Rating <input type="text" name="rating" />
+                    <input type="submit" />
+                </form>
+            </li>
+        </ul>
+
+        <ul>
+            <li>
+                <a href="{{ url_for('import_data')}}">Import Data</a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('list_all')}}">List All</a>
+            </li>
+
+            <li>
+                <form action="{{ url_for('movies_year')}}">
+                    Movies released in Year <input type="text" name="year" />
+                    <input type="submit" />
+                </form>
+            </li>
+
+            <li>
+                <form action="{{ url_for('movies_year_title')}}">
+                    Movies released in Year <input type="text" name="year" />
+                    Title starts with: <input type="text" name="title_from" />
+                    Title ends with: <input type="text" name="title_to" />
+                    <input type="submit" />
+                </form>
+            </li>
+        </ul>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,6 @@
+{
+    "dev": {
+        "app_function": "lambda_zappa.app", 
+        "s3_bucket": "zappa-gtbzr5bxw"
+    }
+}
