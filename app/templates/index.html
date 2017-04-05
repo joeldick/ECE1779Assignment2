@@ -2,6 +2,10 @@
 {% block content %}
     {% if session['username'] == Null %}
         Please Log in.
+
+            <ul>
+            <li><a href="{{ url_for('create_users_table')}}">Create Users Table</a></li>
+        </ul>
     {% else %}
         <ul>
             <li><a href="{{url_for('index')}}">Index</a></li>
@@ -18,9 +22,15 @@
         </ul>
 
         <ul>
-            <li><a href="{{ url_for('create_table')}}">Create Table</a></li>
+            <li><a href="{{ url_for('create_movies_table')}}">Create Movies Table</a></li>
 
-            <li><a href="{{ url_for('delete_table')}}">Delete Table</a></li>
+            <li><a href="{{ url_for('delete_movies_table')}}">Delete Movies Table</a></li>
+        </ul>
+
+        <ul>
+            <li><a href="{{ url_for('create_users_table')}}">Create Users Table</a></li>
+
+            <li><a href="{{ url_for('delete_users_table')}}">Delete Users Table</a></li>
         </ul>
 
         <ul>

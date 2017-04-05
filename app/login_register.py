@@ -1,7 +1,8 @@
 from app import app
 
 from flask import request, render_template, redirect, url_for, session, g
-from app.db import get_db
+
+from app.dynamo import dynamodb
 
 app.secret_key = '\x91b\x8d\xfe\x16\xf5\x15\xd0\xee\xb7ZBe\xe7\x17\xc9Cc\x1cy3\x8f\x86\x84\xc7=\x9c2\x94\xa7YE8\x05'
 
@@ -20,36 +21,28 @@ def login():
         # if method=POST log the user in
         elif request.method == 'POST':
 
+            table = dynamodb.Table('Users')
+
             provided_username = request.form.get('username')
             provided_password = request.form.get('password')
 
-            # look up the user's password from the users table using username
+            # look up the username in the table and get the username/password pair
+            response = table.get_item(
+                Key={
+                    'username': provided_username
+                },
+                ProjectionExpression="username, password"
+            )
 
-            # connect to the database
-            cnx = get_db()
-            cursor = cnx.cursor()
-
-            # sanitize sql query (provided_username)
-            # todo
-
-            # query the database for the password
-            query = "SELECT * FROM users WHERE login = %s"
-            cursor.execute(query, (provided_username,))
-
-            # now get the password from the cursor
-            first_row = cursor.fetchone()
-
-            cursor.close()
-            cnx.close()
-
-            # if user doesn't exist, return an error message and reload login page
-            if first_row is None:
+            # if username does not exit, return error message
+            if 'Item' not in response:
                 return render_template('login/login.html',
                                        page_header="Login",
                                        error_msg="No such username",
                                        username=request.form.get('username'))
+            # if username does exist, check that password matches
             else:
-                true_password = first_row[2]
+                true_password = response['Item']['password']
 
             # if password matches, create a session for the user
             if provided_password == true_password:
@@ -83,27 +76,29 @@ def register():
 
         username = request.form.get('username')
         password = request.form.get('password')
-        # do validation on page
 
-        # check if user already exists
-        cnx = get_db()
-        cursor = cnx.cursor()
-        query = '''
-                SELECT login FROM users
-                WHERE login = %s
-                '''
-        cursor.execute(query, (username,))
-        if cursor.fetchone() is not None:
+        table = dynamodb.Table('Users')
+
+        # look for username in 'Users' table
+        response = table.get_item(
+            Key={
+                'username': username
+            },
+            ProjectionExpression="username, password"
+        )
+
+        # check if username already exists
+        if 'Item' in response:
             return render_template('login/register.html',
-                                   page_header="Login",
                                    error_msg="Username already exits",
                                    username=request.form.get('username'))
 
-        # if all good, insert new user into users table
-        query = '''
-                INSERT INTO users(login, password)
-                VALUES (%s,%s)'''
-        cursor.execute(query, (username, password))
-        cnx.commit()
+        # if name doesn't already exist, add it
+        response = table.put_item(
+            Item={
+                'username': username,
+                'password': password
+            }
+        )
 
         return redirect(url_for('login'), code=307)
