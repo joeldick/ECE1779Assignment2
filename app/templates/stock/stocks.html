@@ -18,17 +18,17 @@
     {%  endif %}
     <table>
         <tr><th>Title</th><th>Year</th><th>Rating</th></tr>
-        {% for movie in movies %}
+        {% for stock in stocks %}
 
         <tr>
             <td>
-                {{ movie['title'] }}
+                {{ stock['title'] }}
             </td>
             <td>
-                {{ movie['year'] }}
+                {{ stock['year'] }}
             </td>
             <td>
-                {{ movie['rating'] }}
+                {{ stock['rating'] }}
             </td>
 
         </tr>

@@ -3,14 +3,13 @@ from app import app
 from flask import request, render_template, redirect, url_for, session, g
 
 import json
-import boto3
 from boto3.dynamodb.conditions import Key, Attr
 from app.dynamo import dynamodb
 
 
 @app.route('/put')
 def stock_put():
-    table = dynamodb.Table('Movies')
+    table = dynamodb.Table('Stocks')
 
     title = request.args.get('title')
     year = int(request.args.get('year'))
@@ -30,7 +29,7 @@ def stock_put():
 
 @app.route('/get')
 def stock_get():
-    table = dynamodb.Table('Movies')
+    table = dynamodb.Table('Stocks')
 
     title = request.args.get('title')
     year = int(request.args.get('year'))
@@ -50,12 +49,12 @@ def stock_get():
         item = response['Item']
         data.update(item)
 
-    return render_template("stock/stock_detail.html", movie=data)
+    return render_template("stock/stock_detail.html", stock=data)
 
 
 @app.route('/update')
-def movie_update():
-    table = dynamodb.Table('Movies')
+def stock_update():
+    table = dynamodb.Table('Stocks')
 
     title = request.args.get('title')
     year = int(request.args.get('year'))
@@ -80,16 +79,16 @@ def movie_update():
 
 @app.route('/import_data')
 def import_data():
-    table = dynamodb.Table('Movies')
+    table = dynamodb.Table('Stocks')
 
-    with open("moviedata.json") as json_file:
-        movies = json.load(json_file)
-        for movie in movies:
-            year = int(movie['year'])
-            title = movie['title']
-            info = movie['info']
+    with open("stockdata.json") as json_file:
+        stocks = json.load(json_file)
+        for stock in stocks:
+            year = int(stock['year'])
+            title = stock['title']
+            info = stock['info']
 
-            print("Adding movie:", year, title)
+            print("Adding stock:", year, title)
 
             item = {
                 'year': year,
@@ -107,7 +106,7 @@ def import_data():
 
 @app.route('/list_all')
 def list_all():
-    table = dynamodb.Table('Movies')
+    table = dynamodb.Table('Stocks')
 
     fe = Key('year').between(1950, 1959);
     pe = "#yr, title, rating"
@@ -137,12 +136,12 @@ def list_all():
         for i in response['Items']:
             records.append(i)
 
-    return render_template("stock/stocks.html", movies=records)
+    return render_template("stock/stocks.html", stocks=records)
 
 
-@app.route('/movies')
-def movies_year():
-    table = dynamodb.Table('Movies')
+@app.route('/stocks')
+def stocks_year():
+    table = dynamodb.Table('Stocks')
 
     if 'year' not in request.args or \
                     request.args.get('year').isdigit() == False:
@@ -159,12 +158,12 @@ def movies_year():
     for i in response['Items']:
         records.append(i)
 
-    return render_template("stock/stocks.html", movies=records)
+    return render_template("stock/stocks.html", stocks=records)
 
 
-@app.route('/movies_year_title')
-def movies_year_title():
-    table = dynamodb.Table('Movies')
+@app.route('/stocks_year_title')
+def stocks_year_title():
+    table = dynamodb.Table('Stocks')
 
     year = int(request.args.get('year'))
     title_from = request.args.get('title_from')
@@ -181,4 +180,4 @@ def movies_year_title():
     for i in response['Items']:
         records.append(i)
 
-    return render_template("stock/stocks.html", movies=records)
+    return render_template("stock/stocks.html", stocks=records)

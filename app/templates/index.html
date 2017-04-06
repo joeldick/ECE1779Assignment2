@@ -22,9 +22,9 @@
         </ul>
 
         <ul>
-            <li><a href="{{ url_for('create_movies_table')}}">Create Movies Table</a></li>
+            <li><a href="{{ url_for('create_stocks_table')}}">Create Stocks Table</a></li>
 
-            <li><a href="{{ url_for('delete_movies_table')}}">Delete Movies Table</a></li>
+            <li><a href="{{ url_for('delete_stocks_table')}}">Delete Stocks Table</a></li>
         </ul>
 
         <ul>
@@ -36,7 +36,7 @@
         <ul>
             <li>
                 <form action="{{ url_for('stock_put')}}">
-                    Put movie
+                    Put stock
                     Year <input type="text" name="year" />
                     Title <input type="text" name="title" />
                     Rating <input type="text" name="rating" />
@@ -46,7 +46,7 @@
 
             <li>
                 <form action="{{ url_for('stock_get')}}">
-                    Get movie
+                    Get stock
                     Year <input type="text" name="year" />
                     Title <input type="text" name="title" />
                     <input type="submit" />
@@ -54,8 +54,8 @@
             </li>
 
             <li>
-                <form action="{{ url_for('movie_update')}}">
-                    Update movie
+                <form action="{{ url_for('stock_update')}}">
+                    Update stock
                     Year <input type="text" name="year" />
                     Title <input type="text" name="title" />
                     Rating <input type="text" name="rating" />
@@ -74,15 +74,15 @@
             </li>
 
             <li>
-                <form action="{{ url_for('movies_year')}}">
-                    Movies released in Year <input type="text" name="year" />
+                <form action="{{ url_for('stocks_year')}}">
+                    Stocks released in Year <input type="text" name="year" />
                     <input type="submit" />
                 </form>
             </li>
 
             <li>
-                <form action="{{ url_for('movies_year_title')}}">
-                    Movies released in Year <input type="text" name="year" />
+                <form action="{{ url_for('stocks_year_title')}}">
+                    Stocks released in Year <input type="text" name="year" />
                     Title starts with: <input type="text" name="title_from" />
                     Title ends with: <input type="text" name="title_to" />
                     <input type="submit" />

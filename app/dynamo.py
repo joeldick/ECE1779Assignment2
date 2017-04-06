@@ -45,10 +45,10 @@ def delete_users_table():
     return redirect(url_for('index'))
 
 
-@app.route('/create_movies_table')
-def create_movies_table():
+@app.route('/create_stocks_table')
+def create_stocks_table():
     table = dynamodb.create_table(
-        TableName='Movies',
+        TableName='Stocks',
         KeySchema=[
             {
                 'AttributeName': 'year',
@@ -79,13 +79,13 @@ def create_movies_table():
     return redirect(url_for('index'))
 
 
-@app.route('/delete_movies_table')
-def delete_movies_table():
+@app.route('/delete_stocks_table')
+def delete_stocks_table():
     #dynamodb = boto3.client('dynamodb', region_name='us-east-1', endpoint_url="http://localhost:8000")
     dynamodb = boto3.client('dynamodb', region_name='us-east-1')
 
     response = dynamodb.delete_table(
-        TableName='Movies'
+        TableName='Stocks'
     )
 
     return redirect(url_for('index'))
