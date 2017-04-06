@@ -51,21 +51,21 @@ def create_stocks_table():
         TableName='Stocks',
         KeySchema=[
             {
-                'AttributeName': 'year',
+                'AttributeName': 'symbol',
                 'KeyType': 'HASH'  # Partition key
             },
             {
-                'AttributeName': 'title',
+                'AttributeName': 'date',
                 'KeyType': 'RANGE'  # Sort key
             }
         ],
         AttributeDefinitions=[
             {
-                'AttributeName': 'year',
-                'AttributeType': 'N'
+                'AttributeName': 'symbol',
+                'AttributeType': 'S'
             },
             {
-                'AttributeName': 'title',
+                'AttributeName': 'date',
                 'AttributeType': 'S'
             },
 

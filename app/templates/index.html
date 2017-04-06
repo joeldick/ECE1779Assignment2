@@ -13,7 +13,7 @@
 
         <ul>
             <li>
-                <form action="{{ url_for('stock_get') }}">
+                <form action="{{ url_for('stock_get_quote') }}">
                     Exchange <input type="text" name="exchange">
                     Ticker <input type="text" name="ticker">
                     <input type="submit"/>
@@ -45,10 +45,12 @@
             </li>
 
             <li>
-                <form action="{{ url_for('stock_get')}}">
+                <form action="{{ url_for('stock_get_quote') }}">
                     Get stock
+                    Symbol <input type="text" name="symbol" />
                     Year <input type="text" name="year" />
-                    Title <input type="text" name="title" />
+                    Month <input type="text" name="month" />
+                    Day <input type="text" name="day" />
                     <input type="submit" />
                 </form>
             </li>
