@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <style>
+        table {
+           border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+    </style>
+
+    {%  if error_msg %}
+        <div>
+            <b>{{ error_msg }}</b>
+        </div>
+    {%  endif %}
+    <table>
+        {% for property in stock %}
+
+        <tr>
+            <td>
+                {{ property }}
+            </td>
+            <td>
+                {{ stock[property] }}
+            </td>
+
+        </tr>
+        {% endfor %}
+
+    </table>
+
+
+{% endblock %}

@@ -5,49 +5,69 @@ from flask import request, render_template, redirect, url_for, session, g
 import json
 from boto3.dynamodb.conditions import Key, Attr
 from yahoo_finance import Share
+from datetime import date
 
 
+@app.route('/get_quote', methods=['GET'])
+def stock_quote_get():
 
-@app.route('/get_quote')
-def stock_get_quote():
-    table = dynamodb.Table('Stocks')
-
-    print(str(request))
+    print(request.args.get('symbol'))
     symbol = str(request.args.get('symbol'))
-    year = str(request.args.get('year'))
-    month = str(request.args.get('month'))
-    day = str(request.args.get('day'))
-    print('year: ' + year + '\n' + 'month: ' + month + '\n' + 'day: ' + day + '\n')
-    date = year + '-' + month + '-' + day
 
-    yahoo = Share(symbol)
-    yahoo_quote = yahoo.get_historical(date, date) # should return list with a single dict item
-    quote = {
-        'symbol': yahoo_quote[0]['Symbol'],
-        'date': yahoo_quote[0]['Date'],
-        'open': yahoo_quote[0]['Open'],
-        'high': yahoo_quote[0]['High'],
-        'low': yahoo_quote[0]['Low'],
-        'close': yahoo_quote[0]['Close'],
-        'volume': yahoo_quote[0]['Volume'],
-    }
+    stock = Share(symbol)
 
-    #response = table.get_item(
-    #    Key={
-    #        'stock': ticker,
-    #        'date': date
-    #    },
-    #    ProjectionExpression="date, open, high, low, close, volume"
-    #    #ExpressionAttributeNames={"#dt": "date"}
-    #)
+    stock_name = stock.get_name()
+    stock_symbol = stock.symbol
+    stock_price = stock.get_price()
+    stock_change = stock.get_change()
+    stock_change_pct = stock.get_percent_change()
 
-    #data = {}
+    prev_close = stock.get_prev_close()
+    open = stock.get_open()
+    day_range = stock.get_days_range()
+    year_range = stock.get_year_range()
+    volume = stock.get_volume()
+    avg_volume = stock.get_avg_daily_volume()
+    market_cap = stock.get_market_cap()
+    pe_ratio = stock.get_price_earnings_ratio()
+    eps = stock.get_earnings_share()
+    dividend = stock.get_dividend_share()
+    dividend_yld = stock.get_dividend_yield()
+    dividend_ex_date = stock.get_ex_dividend_date()
+    yr_target = stock.get_one_yr_target_price()
 
-    #if 'Item' in response:
-     #   item = response['Item']
-     #   data.update(item)
+    historical = stock.get_historical('2017-01-01', date.isoformat(date.today()))
 
-    return render_template("stock/stock_detail.html", stock=quote)
+    close_history = []
+
+    for point in historical:
+        close_date = point['Date']
+        close_price = point['Adj_Close']
+        close_history.append([close_date,close_price])
+
+    return render_template("stock/stock_detail.html",
+                           stock_name=stock_name,
+                           stock_symbol=stock_symbol,
+                           stock_price=stock_price,
+                           stock_change=stock_change,
+                           stock_change_pct=stock_change_pct,
+                           prev_close=prev_close,
+                           open=open,
+                           day_range=day_range,
+                           year_range=year_range,
+                           volume=volume,
+                           avg_volume=avg_volume,
+                           market_cap=market_cap,
+                           pe_ratio=pe_ratio,
+                           eps=eps,
+                           dividend=dividend,
+                           dividend_yld=dividend_yld,
+                           dividend_ex_date=dividend_ex_date,
+                           yr_target=yr_target,
+                           close_history=close_history
+                           )
+
+
 
 ## The Functions below are all leftovers from the movies database.
 ## Update for stocks with functions that do the following:
@@ -63,175 +83,3 @@ def stock_get_quote():
 ##    i.e. get_name(), get_info(), get_price(), get_change(), previous close, open,
 ##    bid, ask, volume, market cap, beta, PE Ratio, EPS, Dividend, Yield, 1y estimate
 ##    and template should format it nicely.
-
-@app.route('/stock_price_history')
-def stock_price_history():
-    table = dynamodb.Table('Stocks')
-
-    year = int(request.args.get('year'))
-    title_from = request.args.get('title_from')
-    title_to = request.args.get('title_to')
-
-    response = table.query(
-        ProjectionExpression="#yr, title, rating",
-        ExpressionAttributeNames={"#yr": "year"},  # Expression Attribute Names for Projection Expression only.
-        KeyConditionExpression=Key('year').eq(year) & Key('title').between(title_from, title_to)
-    )
-
-    records = []
-
-    for i in response['Items']:
-        records.append(i)
-
-    return render_template("stock/stocks.html", stocks=records)
-
-
-@app.route('/put')
-def stock_put():
-    table = dynamodb.Table('Stocks')
-
-    title = request.args.get('title')
-    year = int(request.args.get('year'))
-    rating = request.args.get('rating')
-
-    response = table.put_item(
-        Item={
-            'year': year,
-            'title': title,
-            'plot': "Nothing happens at all.",
-            'rating': rating
-        }
-    )
-
-    return redirect(url_for('index'))
-
-
-@app.route('/update')
-def stock_update():
-    table = dynamodb.Table('Stocks')
-
-    title = request.args.get('title')
-    year = int(request.args.get('year'))
-    rating = request.args.get('rating')
-
-    response = table.update_item(
-        Key={
-            'year': year,
-            'title': title
-        },
-        UpdateExpression="set rating = :r, plot=:p, actors=:a",
-        ExpressionAttributeValues={
-            ':r': rating,
-            ':p': "Everything happens all at once.",
-            ':a': ["Larry", "Moe", "Curly"]
-        }
-
-    )
-
-    return redirect(url_for('index'))
-
-
-@app.route('/import_data')
-def import_data():
-    table = dynamodb.Table('Stocks')
-
-    with open("stockdata.json") as json_file:
-        stocks = json.load(json_file)
-        for stock in stocks:
-            year = int(stock['year'])
-            title = stock['title']
-            info = stock['info']
-
-            print("Adding stock:", year, title)
-
-            item = {
-                'year': year,
-                'title': title
-            }
-
-            item.update(info)
-
-            table.put_item(
-                Item=item
-            )
-
-    return redirect(url_for('index'))
-
-
-@app.route('/list_all')
-def list_all():
-    table = dynamodb.Table('Stocks')
-
-    fe = Key('year').between(1950, 1959);
-    pe = "#yr, title, rating"
-    # Expression Attribute Names for Projection Expression only.
-    ean = {"#yr": "year", }
-    esk = None
-
-    # FilterExpression=fe,
-
-    response = table.scan(
-        ProjectionExpression=pe,
-        ExpressionAttributeNames=ean
-    )
-
-    records = []
-
-    for i in response['Items']:
-        records.append(i)
-
-    while 'LastEvaluatedKey' in response:
-        response = table.scan(
-            ProjectionExpression=pe,
-            ExpressionAttributeNames=ean,
-            ExclusiveStartKey=response['LastEvaluatedKey']
-        )
-
-        for i in response['Items']:
-            records.append(i)
-
-    return render_template("stock/stocks.html", stocks=records)
-
-
-@app.route('/stocks')
-def stocks_year():
-    table = dynamodb.Table('Stocks')
-
-    if 'year' not in request.args or \
-                    request.args.get('year').isdigit() == False:
-        return "Error! All inputs most be of type int"
-
-    year = int(request.args.get('year'))
-
-    response = table.query(
-        KeyConditionExpression=Key('year').eq(year)
-    )
-
-    records = []
-
-    for i in response['Items']:
-        records.append(i)
-
-    return render_template("stock/stocks.html", stocks=records)
-
-
-@app.route('/stocks_year_title')
-def stocks_year_title():
-    table = dynamodb.Table('Stocks')
-
-    year = int(request.args.get('year'))
-    title_from = request.args.get('title_from')
-    title_to = request.args.get('title_to')
-
-    response = table.query(
-        ProjectionExpression="#yr, title, rating",
-        ExpressionAttributeNames={"#yr": "year"},  # Expression Attribute Names for Projection Expression only.
-        KeyConditionExpression=Key('year').eq(year) & Key('title').between(title_from, title_to)
-    )
-
-    records = []
-
-    for i in response['Items']:
-        records.append(i)
-
-    return render_template("stock/stocks.html", stocks=records)

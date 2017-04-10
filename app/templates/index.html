@@ -8,86 +8,12 @@
         </ul>
     {% else %}
         <ul>
-            <li><a href="{{url_for('index')}}">Index</a></li>
-        </ul>
-
-        <ul>
             <li>
-                <form action="{{ url_for('stock_get_quote') }}">
-                    Exchange <input type="text" name="exchange">
-                    Ticker <input type="text" name="ticker">
-                    <input type="submit"/>
-                </form>
-            </li>
-        </ul>
-
-        <ul>
-            <li><a href="{{ url_for('create_stocks_table')}}">Create Stocks Table</a></li>
-
-            <li><a href="{{ url_for('delete_stocks_table')}}">Delete Stocks Table</a></li>
-        </ul>
-
-        <ul>
-            <li><a href="{{ url_for('create_users_table')}}">Create Users Table</a></li>
-
-            <li><a href="{{ url_for('delete_users_table')}}">Delete Users Table</a></li>
-        </ul>
-
-        <ul>
-            <li>
-                <form action="{{ url_for('stock_put')}}">
-                    Put stock
-                    Year <input type="text" name="year" />
-                    Title <input type="text" name="title" />
-                    Rating <input type="text" name="rating" />
-                    <input type="submit" />
-                </form>
-            </li>
-
-            <li>
-                <form action="{{ url_for('stock_get_quote') }}">
-                    Get stock
+                <form method="get" action="{{ url_for('stock_quote_get') }}">
+                    Get stock quote:
+                    <br>
                     Symbol <input type="text" name="symbol" />
-                    Year <input type="text" name="year" />
-                    Month <input type="text" name="month" />
-                    Day <input type="text" name="day" />
-                    <input type="submit" />
-                </form>
-            </li>
-
-            <li>
-                <form action="{{ url_for('stock_update')}}">
-                    Update stock
-                    Year <input type="text" name="year" />
-                    Title <input type="text" name="title" />
-                    Rating <input type="text" name="rating" />
-                    <input type="submit" />
-                </form>
-            </li>
-        </ul>
-
-        <ul>
-            <li>
-                <a href="{{ url_for('import_data')}}">Import Data</a>
-            </li>
-
-            <li>
-                <a href="{{ url_for('list_all')}}">List All</a>
-            </li>
-
-            <li>
-                <form action="{{ url_for('stocks_year')}}">
-                    Stocks released in Year <input type="text" name="year" />
-                    <input type="submit" />
-                </form>
-            </li>
-
-            <li>
-                <form action="{{ url_for('stocks_year_title')}}">
-                    Stocks released in Year <input type="text" name="year" />
-                    Title starts with: <input type="text" name="title_from" />
-                    Title ends with: <input type="text" name="title_to" />
-                    <input type="submit" />
+                    <input type="submit" value="Get Quote"/>
                 </form>
             </li>
         </ul>

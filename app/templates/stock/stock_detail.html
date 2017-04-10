@@ -16,21 +16,72 @@
             <b>{{ error_msg }}</b>
         </div>
     {%  endif %}
+
+    <h3>{{ stock_name }} ({{ stock_symbol }})</h3>
+    <h2>{{ stock_price }}  {{ stock_change }} ({{ stock_change_pct }})</h2>
+
+    <div id="stock_plot" style="width: 300px;height: 150px"></div>
+
     <table>
-        {% for property in stock %}
+        <tr>
+            <td>Previous Close</td>
+            <td>{{ prev_close }}</td>
+            <td>Market Cap</td>
+            <td>{{ market_cap }}</td>
+        </tr>
 
         <tr>
-            <td>
-                {{ property }}
-            </td>
-            <td>
-                {{ stock[property] }}
-            </td>
-
+            <td>Open</td>
+            <td>{{ open }}</td>
+            <td>PE Ratio</td>
+            <td>{{ pe_ratio }}</td>
         </tr>
-        {% endfor %}
+
+        <tr>
+            <td>Day's Range</td>
+            <td>{{ day_range }}</td>
+            <td>EPS</td>
+            <td>{{ eps }}</td>
+        </tr>
+
+        <tr>
+            <td>52 Week Range</td>
+            <td>{{ year_range }}</td>
+            <td>Dividend & Yield</td>
+            <td>{{ dividend }} ({{ dividend_yld }})</td>
+        </tr>
+
+        <tr>
+            <td>Volume</td>
+            <td>{{ volume }}</td>
+            <td>Ex-Dividend Date</td>
+            <td>{{ dividend_ex_date }}</td>
+        </tr>
+
+        <tr>
+            <td>Avg. Volume</td>
+            <td>{{ avg_volume }}</td>
+            <td>1y Target Est</td>
+            <td>{{ yr_target }}</td>
+        </tr>
 
     </table>
 
+    <script src="https://code.jquery.com/jquery-3.1.1.js"
+            integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+            crossorigin="anonymous"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.min.js">
+    </script>
+
+    <script>
+        var options = {
+            series: {
+                lines: { show: true},
+                points: { show: true }
+            }
+        };
+
+        $.plot($("#stock_plot"), [ {{ close_history }} ], options);
+    </script>
 
 {% endblock %}
