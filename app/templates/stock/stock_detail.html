@@ -20,7 +20,11 @@
     <h3>{{ stock_name }} ({{ stock_symbol }})</h3>
     <h2>{{ stock_price }}  {{ stock_change }} ({{ stock_change_pct }})</h2>
 
-    <div id="stock_plot" style="width: 300px;height: 150px"></div>
+    <div id="stock_plot" style="width: 600px;height: 200px"></div>
+
+    <form action="{{ url_for('get_quote_detail', id=stock_symbol) }}" method="get">
+        <input value="Detail View" type="submit"/>
+    </form>
 
     <table>
         <tr>
@@ -70,18 +74,24 @@
     <script src="https://code.jquery.com/jquery-3.1.1.js"
             integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
             crossorigin="anonymous"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.min.js">
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.time.js"></script>
 
     <script>
-        var options = {
-            series: {
-                lines: { show: true},
-                points: { show: true }
+    $(function() {
+        options = {
+            xaxis: {
+                mode: "time",
+                timeformat: "%Y-%m-%d"
             }
         };
 
-        $.plot($("#stock_plot"), [ {{ close_history }} ], options);
+        close_history = [ {{ close_history }} ];
+        for (i = 0; i < close_history[0].length; i++) {
+            close_history[0][i][0] *= 1000;
+        }
+        $.plot("#stock_plot", close_history, options);
+    });
     </script>
 
 {% endblock %}

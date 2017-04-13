@@ -8,6 +8,8 @@ from yahoo_finance import Share
 
 
 
+
+
 @app.route('/get_quote_old')
 def stock_quote_get_old():
     table = dynamodb.Table('Stocks')

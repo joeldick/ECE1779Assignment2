@@ -5,7 +5,8 @@ from flask import request, render_template, redirect, url_for, session, g
 import json
 from boto3.dynamodb.conditions import Key, Attr
 from yahoo_finance import Share
-from datetime import date
+from datetime import date, datetime
+import time
 
 
 @app.route('/get_quote', methods=['GET'])
@@ -42,7 +43,9 @@ def stock_quote_get():
 
     for point in historical:
         close_date = point['Date']
+        close_date = int(time.mktime(datetime.strptime(close_date, "%Y-%m-%d").timetuple()))
         close_price = point['Adj_Close']
+        close_price = float(close_price)
         close_history.append([close_date,close_price])
 
     return render_template("stock/stock_detail.html",
@@ -67,7 +70,25 @@ def stock_quote_get():
                            close_history=close_history
                            )
 
+@app.route('/get_quote_detail/<id>', methods=["GET"])
+def get_quote_detail(id):
 
+    stock = Share(id)
+
+    historical = stock.get_historical('2017-01-01', date.isoformat(date.today()))
+
+    close_history = []
+
+    for point in historical:
+        close_date = point['Date']
+        #close_date = datetime.strptime(close_date, '%Y-%m-%d')
+        close_price = point['Adj_Close']
+        close_price = float(close_price)
+        close_history.append([close_date,close_price])
+
+    return render_template("stock/stock_detail_old.html",
+                           close_history=close_history
+                           )
 
 ## The Functions below are all leftovers from the movies database.
 ## Update for stocks with functions that do the following:

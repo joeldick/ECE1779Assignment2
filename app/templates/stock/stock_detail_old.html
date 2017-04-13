@@ -17,14 +17,14 @@
         </div>
     {%  endif %}
     <table>
-        {% for property in stock %}
+        {% for point in close_history %}
 
         <tr>
             <td>
-                {{ property }}
+                {{ point[0] }}
             </td>
             <td>
-                {{ stock[property] }}
+                {{ point[1] }}
             </td>
 
         </tr>
