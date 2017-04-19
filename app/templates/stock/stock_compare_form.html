@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+    <ul>
+        <li>
+            <form method="post" action="{{ url_for('stock_compare') }}">
+                Enter stocks to compare:
+                <br>
+                Stock 1 Symbol <input type="text" name="symbol1" /><br>
+                Stock 2 Symbol <input type="text" name="symbol2" /><br>
+                Stock 3 Symbol <input type="text" name="symbol3" /><br>
+                Stock 4 Symbol <input type="text" name="symbol4" /><br>
+                Stock 5 Symbol <input type="text" name="symbol5" /><br>
+                <input type="submit" value="Compare"/>
+            </form>
+        </li>
+    </ul>
+{% endblock %}
