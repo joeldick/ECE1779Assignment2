@@ -87,7 +87,8 @@ def get_quote_detail(id):
         close_history.append([close_date,close_price])
 
     return render_template("stock/stock_detail_old.html",
-                           close_history=close_history
+                           close_history=close_history,
+                           symbol=id
                            )
 
 ## The Functions below are all leftovers from the movies database.
