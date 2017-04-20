@@ -17,7 +17,10 @@
         </div>
     {%  endif %}
 
+    <h3>Stock Comparison</h3>
+
     <div id="stock_plot" style="width: 600px;height: 200px"></div>
+    <div id="legend" style="width: 200px;height: 200px"></div>
 
     <script src="https://code.jquery.com/jquery-3.1.1.js"
             integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
@@ -34,7 +37,7 @@
             },
             legend: {
                 show: true,
-                container: '#stock_plot'
+                container: '#legend'
             }
         };
 
