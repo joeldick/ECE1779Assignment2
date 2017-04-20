@@ -2,10 +2,6 @@
 {% block content %}
     {% if session['username'] == Null %}
         Please Log in.
-
-            <ul>
-            <li><a href="{{ url_for('create_users_table')}}">Create Users Table</a></li>
-        </ul>
     {% else %}
         <ul>
             <li>
