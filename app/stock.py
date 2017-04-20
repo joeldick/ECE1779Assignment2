@@ -14,6 +14,7 @@ def stock_quote_get():
     print(request.args.get('symbol'))
     symbol = str(request.args.get('symbol'))
 
+    # get all the relevant data from the Yahoo Finance API
     stock = Share(symbol)
 
     stock_name = stock.get_name()
@@ -37,6 +38,28 @@ def stock_quote_get():
     yr_target = stock.get_one_yr_target_price()
 
     historical = stock.get_historical('2017-01-01', date.isoformat(date.today()))
+
+    # put the data into the DynamoDB database
+    table = dynamodb.Table('Stocks')
+    response = table.put_item(
+        Item={
+            'symbol': symbol,
+            'date': date.isoformat(date.today()),
+            'prev_close': prev_close,
+            'open': open,
+            'day_range': day_range,
+            'year_range': year_range,
+            'volume': volume,
+            'avg_volume': avg_volume,
+            'market_cap': market_cap,
+            'pe_ratio': pe_ratio,
+            'eps': eps,
+            'dividend': dividend,
+            'dividend_yld': dividend_yld,
+            'dividend_ex_date': dividend_ex_date,
+            'yr_target': yr_target,
+        }
+    )
 
     close_history = []
 
