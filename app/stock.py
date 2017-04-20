@@ -99,40 +99,43 @@ def stock_compare():
 
     elif request.method == 'POST':
 
-        print(request.form.get('symbol1'))
-        print(request.form.get('symbol2'))
-        print(request.form.get('symbol3'))
-        print(request.form.get('symbol4'))
-        print(request.form.get('symbol5'))
-
         symbol1 = str(request.form.get('symbol1'))
         symbol2 = str(request.form.get('symbol2'))
         symbol3 = str(request.form.get('symbol3'))
         symbol4 = str(request.form.get('symbol4'))
         symbol5 = str(request.form.get('symbol5'))
-        symbols = [symbol1,symbol2,symbol3,symbol4,symbol5]
 
-        stocks = []
+        symbols = []
+        for symbol in [symbol1, symbol2, symbol3, symbol4, symbol5]:
+            if symbol:
+                symbols.append(symbol)
+
+        print(symbols)
+        #stocks = []
+        #for symbol in symbols:
+        #    stocks.append(Share(symbol))
+
+        pe_ratios = []
         for symbol in symbols:
-            stocks.append(Share(symbol))
+            stock = Share(symbol)
 
-        close_histories = []
-        for stock in stocks:
+            proj_eps = float(stock.get_EPS_estimate_next_year())
             historical = stock.get_historical('2017-01-01', date.isoformat(date.today()))
 
-            close_history = []
+            pe_ratio = []
 
             for point in historical:
                 close_date = point['Date']
                 close_date = int(time.mktime(datetime.strptime(close_date, "%Y-%m-%d").timetuple()))
                 close_price = point['Adj_Close']
                 close_price = float(close_price)
-                close_history.append([close_date, close_price])
-            close_histories.append(close_history) # list of lists
+                pe = close_price / proj_eps
+                pe_ratio.append([close_date, pe])
+            pe_ratios.append(pe_ratio) # list of lists
 
         # todo change stock_compare.html template so it has a graph with five lines
         return render_template("stock/stock_compare.html",
-                               close_histories=close_histories,
+                               pe_ratios=pe_ratios,
                                symbols=symbols
                                )
 
