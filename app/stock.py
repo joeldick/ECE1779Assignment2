@@ -161,23 +161,3 @@ def stock_compare():
                                pe_ratios=pe_ratios,
                                symbols=symbols
                                )
-
-        # return render_template("stock/stock_compare.html",
-        #                   close_history=close_history,
-        #                   symbol=id
-        #                   )
-
-        ## The Functions below are all leftovers from the movies database.
-        ## Update for stocks with functions that do the following:
-        ## (Note: all data is passed in through the request variable using either GET or POST
-        ##  and all functions end calling a html template to render the data returned for the user.)
-        ## 1. Update table: User specifies a stock symbol, a start date, and an end date.
-        ##    Function call the yahoo finance API to get historical data, and loads it into
-        ##    the databse.
-        ## 2. Get historical data: User specifies a stock symbol.
-        ##    Function queries the database and then returns all historical closing prices.
-        ## 3. Get current quote/details: User specifies a stock symbol.
-        ##    Function calls yahoo finance API and returns current information about the stock:
-        ##    i.e. get_name(), get_info(), get_price(), get_change(), previous close, open,
-        ##    bid, ask, volume, market cap, beta, PE Ratio, EPS, Dividend, Yield, 1y estimate
-        ##    and template should format it nicely.
